@@ -8,7 +8,6 @@ import pytest
 from starlette.testclient import TestClient
 
 from carecircle.app import create_app, transport_security
-from carecircle.config import Settings
 from carecircle.services import build_services
 
 INIT = {"jsonrpc": "2.0", "id": 1, "method": "ping"}

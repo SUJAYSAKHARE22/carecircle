@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 
 from ..clock import Clock
-from ..models import Alert, Checkin, Message, Person, ReminderEvent, ReminderStatus, Severity
+from ..models import Alert, Checkin, Person, ReminderEvent, ReminderStatus, Severity
 from ..timeutil import get_zone, humanize_time, local_date, local_day_bounds
 from .alerts import AlertService
 from .checkins import MOOD_LABELS, CheckinService
@@ -81,7 +81,8 @@ class DaySummary:
             missed = self.count(ReminderStatus.MISSED)
             skipped = self.count(ReminderStatus.SKIPPED)
             pending = self.count(ReminderStatus.PENDING)
-            extras = [f"{n} {label}" for n, label in ((missed, "missed"), (skipped, "skipped"), (pending, "still pending")) if n]
+            counts = ((missed, "missed"), (skipped, "skipped"), (pending, "still pending"))
+            extras = [f"{n} {label}" for n, label in counts if n]
             parts.append(line + (f" ({', '.join(extras)})." if extras else "."))
         concerns = [a for a in self.alerts if a.severity >= Severity.ATTENTION]
         if concerns:

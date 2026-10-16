@@ -36,6 +36,17 @@ class Settings:
     mcp_token: str | None = None
     telegram_bot_token: str | None = None
     allowed_hosts: tuple[str, ...] = ()
+    digest_time: time = time(20, 0)
+    tick_seconds: int = 30
+    demo_mode: bool = False
+    llm_base_url: str | None = None
+    llm_api_key: str | None = None
+    llm_model: str | None = None
+    llm_timeout: float = 6.0
+
+    @property
+    def llm_configured(self) -> bool:
+        return bool(self.llm_base_url and self.llm_model)
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -57,6 +68,13 @@ class Settings:
             port=_int("CARECIRCLE_PORT", 8000, minimum=1),
             mcp_token=(env.get("CARECIRCLE_MCP_TOKEN") or None),
             telegram_bot_token=(env.get("CARECIRCLE_TELEGRAM_BOT_TOKEN") or None),
+            digest_time=parse_hhmm(env.get("CARECIRCLE_DIGEST_TIME", "20:00")),
+            tick_seconds=_int("CARECIRCLE_TICK_SECONDS", 30, minimum=1),
+            demo_mode=env.get("CARECIRCLE_DEMO", "").strip().lower() in {"1", "true", "yes", "on"},
+            llm_base_url=(env.get("CARECIRCLE_LLM_BASE_URL") or None),
+            llm_api_key=(env.get("CARECIRCLE_LLM_API_KEY") or None),
+            llm_model=(env.get("CARECIRCLE_LLM_MODEL") or None),
+            llm_timeout=float(env.get("CARECIRCLE_LLM_TIMEOUT", "6")),
             allowed_hosts=tuple(
                 h.strip() for h in env.get("CARECIRCLE_ALLOWED_HOSTS", "").split(",") if h.strip()
             ),

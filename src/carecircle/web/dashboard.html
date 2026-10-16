@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareCircle · Caregiver dashboard</title>
+  <link rel="stylesheet" href="/static/common.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">Care<span>Circle</span></a>
+    <label class="field">Caring for
+      <select id="elder"></select>
+    </label>
+    <span id="updated" class="small muted"></span>
+    <nav class="links"><a href="/sim">Alexa+ simulator</a></nav>
+  </header>
+  <main>
+    <section id="demo-bar" class="card demo-bar hidden">
+      <div class="row between">
+        <div><strong>Demo controls</strong> <span class="small muted" id="clock"></span><div class="small muted">Jump the clock forward to show escalation without waiting.</div></div>
+        <div class="row">
+          <button class="small" data-advance="30">+30 min</button>
+          <button class="small" data-advance="120">+2 h</button>
+          <button class="small" data-advance="600">+10 h</button>
+          <button class="small primary" id="tick">Run monitor now</button>
+          <button class="small ghost" id="reset-clock">Reset clock</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-2">
+      <section class="card" aria-labelledby="today-h">
+        <h2 id="today-h">Today</h2>
+        <div id="status-line" class="big-status"></div>
+        <div id="status-sub" class="muted"></div>
+        <div class="stack">
+          <div class="row between small"><span>Reminders confirmed</span><span id="rem-count"></span></div>
+          <div class="meter" role="progressbar" aria-label="Reminders confirmed" id="meter"><i id="meter-fill"></i></div>
+          <div id="summary-text" class="small muted"></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="alerts-h">
+        <h2 id="alerts-h">Alerts</h2>
+        <ul id="alerts" class="list"></ul>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section class="card" aria-labelledby="rem-h">
+        <h2 id="rem-h">Reminders</h2>
+        <ul id="events" class="list"></ul>
+        <h2 class="rem-sub">Routines</h2>
+        <ul id="reminders" class="list"></ul>
+        <form id="reminder-form" class="stack" autocomplete="off">
+          <div class="row">
+            <label class="field">What
+              <input id="r-title" required maxlength="120" placeholder="Blood pressure tablet">
+            </label>
+            <label class="field">When
+              <input id="r-time" type="time" required value="08:00">
+            </label>
+            <label class="field">Days
+              <select id="r-days"><option value="daily">Every day</option><option value="weekdays">Weekdays</option><option value="weekends">Weekends</option></select>
+            </label>
+          </div>
+          <div class="row"><button class="primary" type="submit">Add routine</button>
+          <span class="small muted">Routines only. CareCircle never changes medication.</span></div>
+        </form>
+      </section>
+
+      <section class="stack">
+        <div class="card" aria-labelledby="msg-h">
+          <h2 id="msg-h">Send a message</h2>
+          <form id="message-form" class="stack" autocomplete="off">
+            <div class="row">
+              <label class="field">From <select id="m-from"></select></label>
+              <label class="field">To <select id="m-to"></select></label>
+            </div>
+            <textarea id="m-body" rows="2" maxlength="500" required placeholder="I'll call you at 7 tonight." aria-label="Message"></textarea>
+            <div class="row"><button class="primary" type="submit">Send</button>
+            <span class="small muted" id="m-hint">Elders hear it next time they talk to Alexa+.</span></div>
+          </form>
+        </div>
+        <div class="card" aria-labelledby="circle-h">
+          <h2 id="circle-h">Care circle</h2>
+          <ul id="circle" class="list"></ul>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="tl-h">
+      <h2 id="tl-h">Last seven days</h2>
+      <table class="tl">
+        <thead><tr><th>Day</th><th>Check-in</th><th>Mood</th><th>Reminders</th><th>Concerns</th></tr></thead>
+        <tbody id="timeline"></tbody>
+      </table>
+    </section>
+    <p class="small muted">CareCircle is a family notification aid. It is not a medical device or an emergency service.</p>
+  </main>
+  <script src="/static/common.js"></script>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

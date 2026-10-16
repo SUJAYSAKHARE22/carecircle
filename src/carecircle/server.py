@@ -12,7 +12,7 @@ from mcp.types import ToolAnnotations
 
 from . import __version__
 from .errors import Ambiguous, CareCircleError, ValidationError
-from .models import AlertKind, Person, ReminderStatus, Role, Severity
+from .models import AlertKind, Person, Role, Severity
 from .parsing import parse_days
 from .safety import Assessment
 from .services import Services
@@ -29,9 +29,19 @@ services if they feel unsafe. CareCircle is a family notification aid, not an em
 If a tool returns needs_clarification, ask the person to choose from `options`.
 """
 
-_READ = ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=False)
-_WRITE = ToolAnnotations(read_only_hint=False, destructive_hint=False, idempotent_hint=False, open_world_hint=False)
-_IDEMPOTENT_WRITE = ToolAnnotations(read_only_hint=False, destructive_hint=False, idempotent_hint=True, open_world_hint=False)
+def _annotations(*, read_only: bool, idempotent: bool) -> ToolAnnotations:
+    """None of CareCircle's tools delete data or reach outside the server."""
+    return ToolAnnotations(
+        read_only_hint=read_only,
+        destructive_hint=False,
+        idempotent_hint=idempotent,
+        open_world_hint=False,
+    )
+
+
+_READ = _annotations(read_only=True, idempotent=True)
+_WRITE = _annotations(read_only=False, idempotent=False)
+_IDEMPOTENT_WRITE = _annotations(read_only=False, idempotent=True)
 
 
 def _safe(fn: Callable[..., dict[str, Any]]) -> Callable[..., dict[str, Any]]:

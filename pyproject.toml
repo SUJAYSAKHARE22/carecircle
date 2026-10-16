@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6"]
 
 [project.scripts]
 carecircle = "carecircle.__main__:main"
@@ -29,3 +29,19 @@ where = ["src"]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.setuptools.package-data]
+carecircle = ["web/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/carecircle/i18n.py" = ["E501"]   # translated strings stay on one line for reviewers
+"src/carecircle/safety.py" = ["E501"] # regex rules read best unwrapped
+"src/carecircle/agent.py" = ["E501"]
+"tests/*" = ["E501"]

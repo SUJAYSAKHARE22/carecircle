@@ -54,6 +54,14 @@ class MessageService:
                 self._db.execute("UPDATE messages SET delivered_at = ? WHERE id = ?", (now, m.id))
         return messages
 
+    def undelivered_for_remote(self) -> list[Message]:
+        """Messages addressed to caregivers/family (anyone who is not an elder)."""
+        rows = self._db.all(
+            "SELECT m.* FROM messages m JOIN people p ON p.id = m.to_id"
+            " WHERE m.delivered_at IS NULL AND p.role <> 'elder' ORDER BY m.id"
+        )
+        return [Message.from_row(r) for r in rows]
+
     def mark_delivered(self, message_id: int) -> None:
         self._db.execute(
             "UPDATE messages SET delivered_at = ? WHERE id = ? AND delivered_at IS NULL",

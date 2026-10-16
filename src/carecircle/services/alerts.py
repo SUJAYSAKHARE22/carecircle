@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import Callable
 
 from ..clock import Clock
 from ..db import Database
@@ -11,6 +13,9 @@ from ..errors import NotFound
 from ..models import Alert, AlertKind, Person, Severity
 from ..timeutil import to_iso
 from .people import PeopleService
+
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -27,6 +32,11 @@ class AlertService:
         self._clock = clock
         self._people = people
         self._window = timedelta(minutes=dedupe_minutes)
+        self._listeners: list[Callable[[Alert], None]] = []
+
+    def add_listener(self, listener: Callable[[Alert], None]) -> None:
+        """Called after a *new* alert is committed (e.g. to push a notification immediately)."""
+        self._listeners.append(listener)
 
     def raise_alert(
         self,
@@ -66,7 +76,13 @@ class AlertService:
                 " VALUES (?, ?, ?, ?, ?, ?)",
                 (person_id, int(severity), kind.value, detail[:500], to_iso(now), dedupe_key),
             )
-        return RaisedAlert(self.get(alert_id), True)
+        alert = self.get(alert_id)
+        for listener in self._listeners:
+            try:
+                listener(alert)
+            except Exception:  # a broken notifier must never lose or block an alert
+                log.exception("Alert listener failed for alert %s", alert_id)
+        return RaisedAlert(alert, True)
 
     def get(self, alert_id: int) -> Alert:
         row = self._db.one("SELECT * FROM alerts WHERE id = ?", (alert_id,))

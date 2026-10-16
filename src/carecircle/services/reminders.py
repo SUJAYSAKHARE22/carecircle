@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from difflib import SequenceMatcher
 from typing import Sequence
 
@@ -96,13 +96,19 @@ class ReminderService:
 
     # -- daily events ------------------------------------------------------------
     def materialize(self, person_id: int, day: date) -> int:
-        """Create (idempotently) the confirmation events for one local day."""
+        """Create (idempotently) the confirmation events for one local day.
+
+        A reminder never owes an occurrence that fell due before it was created, so setting up
+        an 08:00 routine at 20:00 does not instantly produce a 'missed' dose.
+        """
         zone = get_zone(self._people.get(person_id).timezone)
         created = 0
         for reminder in self.list(person_id):
             if day.weekday() not in reminder.days:
                 continue
             due = local_moment(day, parse_hhmm(reminder.at_time), zone)
+            if due < reminder.created_at:
+                continue
             cursor = self._db.execute(
                 "INSERT OR IGNORE INTO reminder_events (reminder_id, person_id, due_at)"
                 " VALUES (?, ?, ?)",

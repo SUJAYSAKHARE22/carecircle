@@ -34,3 +34,20 @@ def family(svc: Services):
     svc.people.link(amma.id, rahul.id, "son")
     svc.people.link(amma.id, priya.id, "daughter")
     return amma, rahul, priya
+
+
+@pytest.fixture
+def notified(clock: FixedClock):
+    """Services wired to a RecordingNotifier so deliveries can be asserted."""
+    from carecircle.notifier import RecordingNotifier
+
+    notifier = RecordingNotifier()
+    services = build_services(
+        Settings(db_path=":memory:"), db=Database(":memory:"), clock=clock, notifier=notifier
+    )
+    amma = services.people.create("Amma", Role.ELDER, language="hi")
+    rahul = services.people.create("Rahul", Role.CAREGIVER, telegram_chat_id="111")
+    priya = services.people.create("Priya", Role.FAMILY)
+    services.people.link(amma.id, rahul.id, "son")
+    services.people.link(amma.id, priya.id, "daughter")
+    return services, notifier

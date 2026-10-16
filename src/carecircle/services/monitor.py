@@ -68,7 +68,11 @@ class Monitor:
         for elder in self._people.list(Role.ELDER):
             zone = get_zone(elder.timezone)
             deadline = local_moment(local_date(now, zone), self._s.checkin_deadline, zone)
-            if now < deadline or self._checkins.has_checked_in_today(elder.id):
+            if (
+                now < deadline
+                or deadline < elder.created_at  # joined after today's deadline: nothing was owed
+                or self._checkins.has_checked_in_today(elder.id)
+            ):
                 state = "ok"
             elif now < deadline + timedelta(minutes=self._s.grace_minutes):
                 state = "due"

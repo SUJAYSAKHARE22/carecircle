@@ -8,7 +8,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Sequence
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 _SCHEMA_V1 = """
 CREATE TABLE people (
@@ -90,7 +90,17 @@ CREATE UNIQUE INDEX idx_alerts_dedupe ON alerts (person_id, dedupe_key)
 CREATE INDEX idx_alerts_person_created ON alerts (person_id, created_at);
 """
 
-_MIGRATIONS: dict[int, str] = {1: _SCHEMA_V1}
+_SCHEMA_V2 = """
+CREATE TABLE digests (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER NOT NULL REFERENCES people (id) ON DELETE CASCADE,
+    day       TEXT NOT NULL,
+    sent_at   TEXT NOT NULL,
+    UNIQUE (person_id, day)
+);
+"""
+
+_MIGRATIONS: dict[int, str] = {1: _SCHEMA_V1, 2: _SCHEMA_V2}
 
 
 class Database:

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from ..clock import Clock
 from ..db import Database
 from ..errors import ValidationError
-from ..models import AlertKind, Checkin, Severity
+from ..models import AlertKind, Checkin
 from ..safety import Assessment, SafetyClassifier
 from ..timeutil import get_zone, local_date, local_day_bounds, to_iso
 from .alerts import AlertService, RaisedAlert

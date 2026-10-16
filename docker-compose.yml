@@ -1,0 +1,19 @@
+services:
+  carecircle:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # Required when the port is reachable by anyone but you.
+      CARECIRCLE_MCP_TOKEN: ${CARECIRCLE_MCP_TOKEN:?set CARECIRCLE_MCP_TOKEN in your shell or .env}
+      # Add the public hostname when serving through a tunnel or reverse proxy.
+      CARECIRCLE_ALLOWED_HOSTS: ${CARECIRCLE_ALLOWED_HOSTS:-}
+    volumes:
+      - carecircle-data:/data
+    restart: unless-stopped
+
+volumes:
+  carecircle-data:

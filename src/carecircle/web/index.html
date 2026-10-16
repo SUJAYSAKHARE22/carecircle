@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareCircle</title>
+  <link rel="stylesheet" href="/static/common.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">Care<span>Circle</span></a>
+    <nav class="links">
+      <a href="/sim">Alexa+ simulator</a>
+      <a href="/dashboard">Caregiver dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>A gentle daily check-in for the people we worry about.</h1>
+      <p>CareCircle is an MCP server for Alexa+. An older relative simply talks; their family hears about
+      concerns, missed routines and good days, without another app to learn.</p>
+    </section>
+    <div class="grid-2">
+      <div class="card stack">
+        <h2>Try it</h2>
+        <a href="/sim"><button class="primary">Open the Alexa+ simulator</button></a>
+        <a href="/dashboard"><button>Open the caregiver dashboard</button></a>
+        <div class="small muted" id="status">Checking server&hellip;</div>
+      </div>
+      <div class="card stack">
+        <h2>Connect an MCP client</h2>
+        <div class="small muted">Streamable HTTP endpoint:</div>
+        <pre class="code" id="endpoint"></pre>
+        <div class="small muted">Send <code>Authorization: Bearer &lt;token&gt;</code> when a token is configured.</div>
+      </div>
+    </div>
+    <p class="small muted">CareCircle is a family notification aid. It is not a medical device or an emergency service.</p>
+  </main>
+  <script src="/static/common.js"></script>
+  <script src="/static/home.js"></script>
+</body>
+</html>

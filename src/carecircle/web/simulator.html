@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareCircle · Alexa+ simulator</title>
+  <link rel="stylesheet" href="/static/common.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">Care<span>Circle</span></a>
+    <span class="muted">Alexa+ simulator</span>
+    <span id="badges" class="row"></span>
+    <nav class="links"><a href="/dashboard">Caregiver dashboard</a></nav>
+  </header>
+  <main class="grid-2">
+    <section class="card echo" aria-labelledby="echo-h">
+      <h2 id="echo-h">Echo (the elder speaks here)</h2>
+      <div class="row">
+        <label class="field">Who is speaking
+          <select id="person"></select>
+        </label>
+        <label class="field">Language
+          <select id="lang">
+            <option value="">Auto (their language)</option>
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="mr">मराठी</option>
+          </select>
+        </label>
+        <label class="field hidden" id="llm-wrap">Brain
+          <select id="brain">
+            <option value="rules">Rule-based (offline)</option>
+            <option value="llm">LLM (function calling)</option>
+          </select>
+        </label>
+      </div>
+      <div class="mic-wrap">
+        <button id="mic" class="mic" aria-label="Hold to talk" title="Click to talk">&#127908;</button>
+        <div id="mic-status" class="small muted" aria-live="polite">Click the mic and speak, or type below.</div>
+      </div>
+      <div id="chat" class="chat" aria-live="polite"></div>
+      <div class="row">
+        <input id="text" type="text" maxlength="600" placeholder="Or type what they would say…" aria-label="Utterance">
+        <button id="send" class="primary">Send</button>
+      </div>
+      <div>
+        <div class="small muted">Try one:</div>
+        <div id="chips" class="chips"></div>
+      </div>
+    </section>
+
+    <section class="stack">
+      <div class="card">
+        <div class="row between"><h2>MCP tool calls (live)</h2><button id="clear" class="small ghost">Clear</button></div>
+        <div id="calls" class="calls"></div>
+      </div>
+      <div class="card">
+        <h2>Caregiver's phone</h2>
+        <div id="phone" class="phone" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+  <script src="/static/common.js"></script>
+  <script src="/static/simulator.js"></script>
+</body>
+</html>

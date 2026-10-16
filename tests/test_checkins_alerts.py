@@ -1,4 +1,3 @@
-from datetime import timedelta
 
 import pytest
 
@@ -47,12 +46,10 @@ def test_recipients_fall_back_to_family(svc):
     assert [p.name for p in svc.alerts.recipients(alert)] == ["Priya"]
 
 
-def test_notify_and_acknowledge(svc, family):
+def test_alert_is_pushed_then_acknowledged(svc, family):
     amma, *_ = family
     alert = svc.checkins.log(amma.id, "chest pain").alert.alert
-    assert [a.id for a in svc.alerts.unnotified()] == [alert.id]
-    svc.alerts.mark_notified(alert.id)
-    assert svc.alerts.unnotified() == []
+    assert svc.alerts.unnotified() == []  # pushed immediately by the dispatcher
     assert svc.alerts.acknowledge(alert.id).acknowledged_at is not None
 
 

@@ -149,7 +149,7 @@ class SafetyClassifier:
                 matches.append(Match(rule.category, rule.severity, found.group(0)))
         severity = max((m.severity for m in matches), default=Severity.INFO)
         result = Assessment(severity, tuple(matches))
-        if self._second is not None:
+        if self._second is not None and result.severity < Severity.URGENT:
             try:
                 extra = self._second.assess(text)
             except Exception:  # a failing second opinion must never hide a rule hit

@@ -98,6 +98,7 @@ class Reminder:
     days: tuple[int, ...]
     created_by: int | None
     active: bool
+    created_at: datetime
 
     @classmethod
     def from_row(cls, row: sqlite3.Row) -> "Reminder":
@@ -109,6 +110,7 @@ class Reminder:
             days=tuple(int(d) for d in row["days"].split(",") if d != ""),
             created_by=row["created_by"],
             active=bool(row["active"]),
+            created_at=from_iso(row["created_at"]),
         )
 
 

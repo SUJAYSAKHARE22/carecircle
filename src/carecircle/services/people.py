@@ -75,6 +75,10 @@ class PeopleService:
             raise Ambiguous(f"More than one person matches {query!r}", [p.name for p in partial])
         raise NotFound(f"I couldn't find anyone called {query!r}")
 
+    def find_by_chat(self, chat_id: str) -> Person | None:
+        row = self._db.one("SELECT * FROM people WHERE telegram_chat_id = ?", (str(chat_id),))
+        return Person.from_row(row) if row else None
+
     # -- circle membership ---------------------------------------------------
     def link(self, elder_id: int, member_id: int, relation: str | None = None) -> None:
         elder, member = self.get(elder_id), self.get(member_id)
